@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A simple to-do application that saves tasks in your browser."
+    />
+    <title>Simple To-Do List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div class="app-header-top">
+          <p class="eyebrow">Personal organizer</p>
+          <button id="sign-out-button" class="sign-out-button" type="button">Sign out</button>
+        </div>
+        <h1>My tasks</h1>
+        <p class="intro">Keep track of what matters, one task at a time.</p>
+      </header>
+
+      <section class="task-panel task-list-panel" aria-labelledby="tasks-heading">
+        <div class="list-heading">
+          <div>
+            <h2 id="tasks-heading">Your list</h2>
+            <p id="task-count" aria-live="polite">0 tasks remaining</p>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <nav class="filters" aria-label="Filter tasks">
+            <button class="filter-button is-selected" type="button" data-filter="today" aria-pressed="true">Today</button>
+            <button class="filter-button" type="button" data-filter="overdue" aria-pressed="false">Overdue</button>
+            <button class="filter-button" type="button" data-filter="calendar" aria-pressed="false">Calendar</button>
+            <button class="filter-button" type="button" data-filter="archived" aria-pressed="false">Archive</button>
+          </nav>
+          <button id="upcoming-calendar-button" class="upcoming-calendar-button" type="button" aria-label="Choose a date" aria-haspopup="dialog" aria-controls="upcoming-calendar-dialog">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2" />
+              <path d="M3 10h18M8 3v4M16 3v4" />
+            </svg>
+          </button>
+        </div>
+
+        <section id="new-task-panel" class="task-panel new-task-panel" aria-labelledby="add-task-heading" hidden>
+          <h2 id="add-task-heading" class="visually-hidden">Add a task</h2>
+          <form id="task-form" class="task-form">
+            <label class="visually-hidden" for="task-input">Task title</label>
+            <textarea
+              id="task-input"
+              name="task"
+              class="task-title-input"
+              placeholder="Task title"
+              maxlength="200"
+              rows="1"
+              required
+            ></textarea>
+            <label class="visually-hidden" for="task-description">Task description</label>
+            <textarea
+              id="task-description"
+              name="description"
+              class="task-description-input"
+              placeholder="Task description"
+              maxlength="500"
+              rows="2"
+            ></textarea>
+            <div class="schedule-inputs">
+              <fieldset class="schedule-fieldset">
+                <legend class="visually-hidden">Task date and time</legend>
+                <div class="schedule-picker">
+                  <button id="task-field" class="schedule-field" type="button">
+                    <span class="clock-icon" aria-hidden="true"></span>
+                    <span id="task-date-text">Today</span>
+                  </button>
+                  <input id="task-date" type="hidden" />
+                  <input id="task-end-date" type="hidden" />
+                </div>
+              </fieldset>
+              <div class="task-form-actions">
+                <button id="cancel-task-form" class="cancel-task-button" type="button">Cancel</button>
+                <button class="add-task-submit" type="submit">Add</button>
+              </div>
+            </div>
+          </form>
+          <p id="form-message" class="form-message" role="alert" aria-live="polite"></p>
+        </section>
+
+        <p id="empty-state" class="empty-state">No tasks yet. Add one above to get started.</p>
+        <ul id="task-list" class="task-list" aria-label="Tasks"></ul>
+      </section>
+    </main>
+
+    <button id="open-task-form" class="floating-add-button" type="button" aria-controls="new-task-panel" aria-expanded="false">
+      <span aria-hidden="true">+</span> Add task
+    </button>
+
+    <div id="delete-toast" class="delete-toast" role="status" aria-live="polite" aria-hidden="true" hidden>
+      <span>Task deleted</span>
+      <button id="undo-delete" class="undo-delete-button" type="button">Undo</button>
+      <button id="close-delete-toast" class="close-delete-toast" type="button" aria-label="Close delete message">×</button>
+    </div>
+
+    <template id="task-template">
+      <li class="task-item">
+        <div class="task-main">
+          <input class="task-toggle" type="checkbox" />
+          <div class="task-details">
+            <p class="task-title"></p>
+            <p class="task-description"></p>
+            <p class="task-schedule"></p>
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="archive-button" type="button" aria-label="Archive task" title="Archive task" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16v13H4z" />
+              <path d="M3 4h18v3H3z" />
+              <path d="M9 12h6" />
+            </svg>
+          </button>
+          <button class="edit-button" type="button" aria-label="Edit task" title="Edit task">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z" />
+            </svg>
+          </button>
+          <button class="delete-button" type="button" aria-label="Delete task" title="Delete task">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 6h18" />
+              <path d="M8 6V4h8v2" />
+              <path d="M19 6l-1 14H6L5 6" />
+              <path d="M10 11v5M14 11v5" />
+            </svg>
+          </button>
+        </div>
+      </li>
+    </template>
+
+    <dialog id="schedule-dialog" class="schedule-dialog" aria-labelledby="schedule-dialog-title">
+      <form id="schedule-dialog-form" class="schedule-dialog-form">
+        <div class="dialog-heading">
+          <h2 id="schedule-dialog-title">Choose date and time</h2>
+          <button id="schedule-cancel" class="dialog-close" type="button" aria-label="Close date and time picker">×</button>
+        </div>
+        <section class="calendar-picker" aria-label="Choose a date">
+          <div class="calendar-header">
+            <button id="calendar-previous" class="calendar-navigation" type="button" aria-label="Previous month">‹</button>
+            <p id="calendar-month" class="calendar-month" aria-live="polite"></p>
+            <button id="calendar-next" class="calendar-navigation" type="button" aria-label="Next month">›</button>
+          </div>
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div id="calendar-days" class="calendar-days" role="grid" aria-label="Calendar dates"></div>
+        </section>
+        <div class="calendar-selection-row">
+          <p id="selected-calendar-date" class="selected-calendar-date"></p>
+          <div class="dialog-time-controls">
+            <label class="visually-hidden" for="dialog-start-time">Start time</label>
+            <select id="dialog-start-time" class="dialog-time" aria-label="Choose a start time"></select>
+            <label class="visually-hidden" for="dialog-end-time">End time</label>
+            <select id="dialog-end-time" class="dialog-time" aria-label="Choose an end time"></select>
+          </div>
+        </div>
+        <p id="dialog-message" class="dialog-message" role="alert"></p>
+        <div class="dialog-actions">
+          <button id="schedule-cancel-secondary" type="button">Cancel</button>
+          <button type="submit">Apply</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="upcoming-calendar-dialog" class="schedule-dialog upcoming-calendar-dialog" aria-labelledby="upcoming-calendar-title">
+      <div class="upcoming-calendar-content">
+        <div class="dialog-heading">
+          <h2 id="upcoming-calendar-title">Choose a date</h2>
+          <button id="upcoming-calendar-close" class="dialog-close" type="button" aria-label="Close calendar">×</button>
+        </div>
+        <section class="calendar-picker" aria-label="Choose a task date">
+          <div class="calendar-header">
+            <button id="upcoming-calendar-previous" class="calendar-navigation" type="button" aria-label="Previous month">‹</button>
+            <p id="upcoming-calendar-month" class="calendar-month" aria-live="polite"></p>
+            <button id="upcoming-calendar-next" class="calendar-navigation" type="button" aria-label="Next month">›</button>
+          </div>
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div id="upcoming-calendar-days" class="calendar-days" role="grid" aria-label="Task dates"></div>
+        </section>
+        <p id="upcoming-calendar-message" class="upcoming-calendar-message" role="status" aria-live="polite"></p>
+      </div>
+    </dialog>
+
+    <script src="script.js?v=calendar-timeline"></script>
+  </body>
+</html>
