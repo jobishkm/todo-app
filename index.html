@@ -11,16 +11,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="landing.css?v=brand-eyebrow" />
+    <link rel="stylesheet" href="landing.css?v=mobile-footer-alignment" />
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Today home">today</a>
-      <nav class="site-nav" aria-label="Main navigation">
-        <a href="#features">Features</a>
-        <a href="#how-it-works">How it works</a>
-      </nav>
-      <a class="header-cta" href="app.html">Try the product</a>
+      <div class="site-header-content">
+        <a class="brand" href="index.html" aria-label="Today home">today</a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How it works</a>
+        </nav>
+        <a class="header-cta" href="app.html">Try the product</a>
+      </div>
     </header>
 
     <main>
@@ -78,17 +80,17 @@
         </div>
         <div class="feature-grid">
           <article>
-            <span class="feature-icon">◷</span>
+            <img class="feature-image" src="assets/f1.jpg" alt="Task scheduling illustration" />
             <h3>Plan around time</h3>
             <p>Give tasks a date and time, then see exactly what needs your attention.</p>
           </article>
           <article>
-            <span class="feature-icon">↻</span>
+            <img class="feature-image" src="assets/f2.jpg" alt="Repeating task illustration" />
             <h3>Build routines</h3>
             <p>Create daily, weekly, or monthly tasks that fit naturally into your rhythm.</p>
           </article>
           <article>
-            <span class="feature-icon">✓</span>
+            <img class="feature-image" src="assets/f3.jpg" alt="Subtask illustration" />
             <h3>Break work down</h3>
             <p>Add subtasks to make larger pieces of work feel clear and manageable.</p>
           </article>
@@ -116,7 +118,7 @@
 
     <footer class="site-footer">
       <a class="brand" href="index.html">today</a>
-      <p>Plan calmly. Move forward.</p>
+      <p>Plan calmly. Move forward. · Designed and built by <a href="https://jobishkm.com/" target="_blank" rel="noopener noreferrer">Jobish</a>.</p>
     </footer>
   </body>
 </html>
